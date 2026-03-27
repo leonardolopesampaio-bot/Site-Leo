@@ -1,29 +1,258 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login do Léo</title>
-  <link rel="stylesheet" href="style.css">
-</head>
+  <title>Jogo da Memória</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #111, #1b1b1b);
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      box-sizing: border-box;
+    }
 
+    .caixa {
+      background-color: rgba(34, 34, 34, 0.95);
+      width: 100%;
+      max-width: 420px;
+      padding: 25px 20px;
+      border-radius: 16px;
+      box-shadow: 0 0 25px rgba(255, 0, 0, 0.25);
+      box-sizing: border-box;
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 28px;
+    }
+
+    p {
+      color: #ddd;
+      margin-bottom: 18px;
+    }
+
+    .info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .tabuleiro {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .carta {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background: #2b2b2b;
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 30px;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(255, 0, 0, 0.2);
+      transition: transform 0.2s, background 0.2s;
+      user-select: none;
+    }
+
+    .carta:hover {
+      transform: scale(1.04);
+    }
+
+    .carta.virada {
+      background: #fff;
+      color: #111;
+    }
+
+    .carta.acertou {
+      background: red;
+      color: white;
+      cursor: default;
+    }
+
+    button {
+      padding: 10px 18px;
+      background-color: red;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #cc0000;
+    }
+
+    .botoes {
+      margin-top: 18px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .mensagem {
+      margin-top: 18px;
+      font-weight: bold;
+      color: #fff;
+      min-height: 24px;
+    }
+
+    @media (max-width: 480px) {
+      .tabuleiro {
+        gap: 8px;
+      }
+
+      .carta {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
 <body>
+
+  <div class="caixa">
+    <h1>Jogo da Memória</h1>
+    <p>Encontre os pares de emojis 💖</p>
+
+    <div class="info">
+      <span id="tentativas">Tentativas: 0</span>
+      <span id="pares">Pares: 0/8</span>
+    </div>
+
+    <div class="tabuleiro" id="tabuleiro"></div>
+
+    <div class="mensagem" id="mensagem"></div>
+
+    <div class="botoes">
+      <button onclick="reiniciarJogo()">Reiniciar</button>
+      <button onclick="sair()">Sair</button>
+    </div>
+  </div>
 
   <script>
     if (localStorage.getItem("logado") !== "true") {
       window.location.href = "index.html";
     }
 
+    const emojisBase = ["😍", "🥰", "😘", "💖", "💕", "🌹", "💘", "❤️"];
+    let cartas = [];
+    let primeiraCarta = null;
+    let segundaCarta = null;
+    let bloqueado = false;
+    let tentativas = 0;
+    let pares = 0;
+
+    function embaralhar(lista) {
+      for (let i = lista.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [lista[i], lista[j]] = [lista[j], lista[i]];
+      }
+      return lista;
+    }
+
+    function criarTabuleiro() {
+      const tabuleiro = document.getElementById("tabuleiro");
+      tabuleiro.innerHTML = "";
+
+      cartas = embaralhar([...emojisBase, ...emojisBase]);
+
+      cartas.forEach((emoji, index) => {
+        const carta = document.createElement("div");
+        carta.className = "carta";
+        carta.dataset.emoji = emoji;
+        carta.dataset.index = index;
+        carta.textContent = "❓";
+        carta.addEventListener("click", virarCarta);
+        tabuleiro.appendChild(carta);
+      });
+    }
+
+    function virarCarta() {
+      if (bloqueado) return;
+      if (this.classList.contains("virada")) return;
+      if (this.classList.contains("acertou")) return;
+
+      this.classList.add("virada");
+      this.textContent = this.dataset.emoji;
+
+      if (!primeiraCarta) {
+        primeiraCarta = this;
+        return;
+      }
+
+      segundaCarta = this;
+      bloqueado = true;
+      tentativas++;
+      atualizarInfo();
+
+      if (primeiraCarta.dataset.emoji === segundaCarta.dataset.emoji) {
+        primeiraCarta.classList.add("acertou");
+        segundaCarta.classList.add("acertou");
+        pares++;
+        atualizarInfo();
+
+        primeiraCarta = null;
+        segundaCarta = null;
+        bloqueado = false;
+
+        if (pares === emojisBase.length) {
+          document.getElementById("mensagem").textContent =
+            "Você venceu 💖";
+        }
+      } else {
+        setTimeout(() => {
+          primeiraCarta.classList.remove("virada");
+          segundaCarta.classList.remove("virada");
+
+          primeiraCarta.textContent = "❓";
+          segundaCarta.textContent = "❓";
+
+          primeiraCarta = null;
+          segundaCarta = null;
+          bloqueado = false;
+        }, 800);
+      }
+    }
+
+    function atualizarInfo() {
+      document.getElementById("tentativas").textContent = "Tentativas: " + tentativas;
+      document.getElementById("pares").textContent = "Pares: " + pares + "/8";
+    }
+
+    function reiniciarJogo() {
+      primeiraCarta = null;
+      segundaCarta = null;
+      bloqueado = false;
+      tentativas = 0;
+      pares = 0;
+      document.getElementById("mensagem").textContent = "";
+      atualizarInfo();
+      criarTabuleiro();
+    }
+
     function sair() {
       localStorage.removeItem("logado");
       window.location.href = "index.html";
     }
-  </script>
 
-  <div class="caixa">
-    <h1>Bem-vindo, Léo 😎</h1>
-    <p>Tu logou com sucesso!</p>
-    <button onclick="sair()">Sair</button>
-  </div>
+    reiniciarJogo();
+  </script>
 
 </body>
 </html>
