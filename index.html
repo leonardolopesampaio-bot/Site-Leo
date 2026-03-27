@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login do Léo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="caixa">
+    <img src="foto.png">
+    <h2>Login</h2>
+
+    <input type="text" id="usuario" placeholder="Usuário">
+    <input type="password" id="senha" placeholder="Senha">
+
+    <button onclick="fazerLogin()">Entrar</button>
+  </div>
+
+  <script>
+    function fazerLogin() {
+      let usuario = document.getElementById("usuario").value;
+      let senha = document.getElementById("senha").value;
+
+      if (usuario === "leo" && senha === "1234") {
+        localStorage.setItem("logado", "true");
+        window.location.href = "home.html";
+      } else {
+        alert("Usuário ou senha incorretos");
+      }
+    }
+  </script>
+
+</body>
+</html>
