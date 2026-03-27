@@ -8,7 +8,7 @@
 <body>
 
   <div class="caixa">
-    <img src="foto.png">
+    <img src="foto.png" alt="Logo">
     <h2>Login</h2>
 
     <input type="text" id="usuario" placeholder="Usuário">
@@ -18,12 +18,23 @@
   </div>
 
   <script>
-    function fazerLogin() {
-      let usuario = document.getElementById("usuario").value;
-      let senha = document.getElementById("senha").value;
+    const usuarios = [
+      { user: "Leo", pass: "1234" },
+      { user: "Luisa", pass: "leoefoda" },
+      { user: "teste", pass: "1234" }
+    ];
 
-      if (usuario === "leo" && senha === "1234") {
+    function fazerLogin() {
+      let usuario = document.getElementById("usuario").value.trim();
+      let senha = document.getElementById("senha").value.trim();
+
+      const encontrado = usuarios.find(
+        u => u.user === usuario && u.pass === senha
+      );
+
+      if (encontrado) {
         localStorage.setItem("logado", "true");
+        localStorage.setItem("usuario", usuario);
         window.location.href = "home.html";
       } else {
         alert("Usuário ou senha incorretos");
