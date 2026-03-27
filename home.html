@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login do Léo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <script>
+    if (localStorage.getItem("logado") !== "true") {
+      window.location.href = "index.html";
+    }
+
+    function sair() {
+      localStorage.removeItem("logado");
+      window.location.href = "index.html";
+    }
+  </script>
+
+  <div class="caixa">
+    <h1>Bem-vindo, Léo 😎</h1>
+    <p>Tu logou com sucesso!</p>
+    <button onclick="sair()">Sair</button>
+  </div>
+
+</body>
+</html>
