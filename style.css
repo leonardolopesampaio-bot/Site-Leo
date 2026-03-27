@@ -1,0 +1,126 @@
+body {
+  background: linear-gradient(135deg, #111, #1b1b1b);
+  color: white;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.caixa {
+  background-color: rgba(34, 34, 34, 0.95);
+  width: 100%;
+  max-width: 320px;
+  padding: 30px 20px;
+  border-radius: 16px;
+  box-shadow: 0 0 25px rgba(255, 0, 0, 0.25);
+  animation: subir 0.8s ease;
+  box-sizing: border-box;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  transition: 0.3s;
+  box-sizing: border-box;
+}
+
+input:focus {
+  transform: scale(1.03);
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+}
+
+button {
+  padding: 12px 24px;
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background-color: #cc0000;
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+img {
+  width: 120px;
+  max-width: 100%;
+  border-radius: 50%;
+  box-shadow: 0 0 20px red;
+  margin-bottom: 20px;
+  animation: glow 2s infinite alternate;
+}
+
+h1, h2, p {
+  word-wrap: break-word;
+}
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 10px red;
+  }
+  to {
+    box-shadow: 0 0 25px red;
+  }
+}
+
+@keyframes subir {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Celular */
+@media (max-width: 480px) {
+  body {
+    padding: 15px;
+  }
+
+  .caixa {
+    max-width: 100%;
+    padding: 25px 18px;
+    border-radius: 14px;
+  }
+
+  img {
+    width: 100px;
+  }
+
+  h1 {
+    font-size: 28px;
+  }
+
+  h2 {
+    font-size: 26px;
+  }
+
+  p {
+    font-size: 16px;
+  }
+
+  button {
+    width: 100%;
+  }
+}
